@@ -13,8 +13,6 @@ def polarized_count_candidate_votes(eliminated_candidate, candidates, lost_voter
 
 def polarized_perform_instant_runoff(candidates, rounding_decimalplace = 6):
     lost_voters = 0 # voters who end up not voting in the election because their candidate has been eliminated, and all other candidates are more conservative
-    
-
     return
 
 # TODO: Auto win for >.5 vote
