@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from tools import *
+from tools import perform_instant_runoff
+from polarized import polarized_perform_instant_runoff
+
+is_polarized = False
 
 # for two-candidate 
 iter = 100_000
@@ -13,8 +16,11 @@ for i in range(iter):
     b = np.random.random()
     c = np.random.random()
 
-    candidates = [a, b]
-    output = perform_instant_runoff(candidates, 2)
+    candidates = [a, b, c]
+    if is_polarized:
+        output = polarized_perform_instant_runoff(candidates, 2)
+    else:
+        output = perform_instant_runoff(candidates, 2)
     if output:
         a_values.append(a)
         b_values.append(b)
@@ -23,7 +29,10 @@ for i in range(iter):
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
 
-# ax.set_title('Points of Tie for 3D')
+if is_polarized:
+    ax.set_title('Points of Tie for 3D, Polarized')
+else:
+    ax.set_title('Points of Tie for 3D')
 ax.set_xlabel('A')
 ax.set_ylabel('B')
 ax.set_zlabel('C')

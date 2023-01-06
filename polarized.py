@@ -43,7 +43,7 @@ def polarized_perform_instant_runoff(candidates, rounding_decimalplace=6):
         -1, candidates)
 
     while len(candidates) > 1:
-        print()
+        # print()
         candidate_votes = [
             round(votes, rounding_decimalplace) for votes in candidate_votes
         ]
@@ -51,23 +51,22 @@ def polarized_perform_instant_runoff(candidates, rounding_decimalplace=6):
         sorted = np.argsort(candidate_votes)
 
         if len(sorted) > 1 and candidate_votes[sorted[0]] == candidate_votes[sorted[1]]:
-            print('There is a tie.')
             return 1
         else:
             eliminated_candidate_index = sorted[0]
-            print('Eliminated:', candidates[eliminated_candidate_index])
+            # print('Eliminated:', candidates[eliminated_candidate_index])
 
         candidate_votes, candidates, lost_voters = polarized_count_candidate_votes(
             eliminated_candidate_index, candidates, candidate_votes, lost_voters)
 
         lost_voters = round(lost_voters, rounding_decimalplace)
-        print('Election round', election_round, ' results: ', candidates)
-        print('New list:', candidates)
-        print('Voters lost:', lost_voters)
+        # print('Election round', election_round, ' results: ', candidates)
+        # print('New list:', candidates)
+        # print('Voters lost:', lost_voters)
         
         election_round += 1  # increment by 1
-    print()
-    print('Winner:', candidates[0])
+    # print()
+    # print('Winner:', candidates[0])
     return
 
 
