@@ -1,5 +1,4 @@
 from collections import Counter
-from loss import *
 from tools import *
 
 def polarized_count_candidate_votes(eliminated_candidate, candidates, lost_voters, most_liberal = False):

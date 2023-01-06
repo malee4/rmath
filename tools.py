@@ -24,7 +24,7 @@ def intake():
 
 
 def count_candidate_votes(candidates):
-  print()
+  # print()
   candidate_votes = []
 
   for i in range(len(candidates)):
@@ -45,18 +45,18 @@ def count_candidate_votes(candidates):
 
 # TODO: Auto win for >.5 vote
 def perform_instant_runoff(candidates, rounding_decimalplace = 6):
-  print('Candidates:')
-  print(candidates)
-  print()
+  # print('Candidates:')
+  # print(candidates)
+  # print()
 
   election_round = 1
   while len(candidates) > 1:
     candidate_votes = count_candidate_votes(candidates)
-    print('Election round', election_round, 'results:')
+    # print('Election round', election_round, 'results:')
     candidate_votes = [
       round(votes, rounding_decimalplace) for votes in candidate_votes
     ]
-    print(candidate_votes)
+    # print(candidate_votes)
 
     eliminated_candidate = min(range(len(candidate_votes)),
                                key=candidate_votes.__getitem__)
@@ -64,18 +64,18 @@ def perform_instant_runoff(candidates, rounding_decimalplace = 6):
     tied = Counter(candidate_votes)[min(candidate_votes)] != 1
     # print(Counter(candidate_votes))
     if tied:
-      print('There was a tie don\'t consider this')
-      return None # explicitly stated, for my sanity
+      # print('There was a tie don\'t consider this')
+      return 1 # explicitly stated, for my sanity
 
-    print('Eliminated:', candidates[eliminated_candidate])
+    # print('Eliminated:', candidates[eliminated_candidate])
 
     candidates.pop(eliminated_candidate)
-    print('New list:', candidates)
+    # print('New list:', candidates)
 
     election_round += 1
 
-  print()
-  print('Winner:', candidates[0])
+  # print()
+  # print('Winner:', candidates[0])
 
 def sort_dict_keys(my_dict):
     sorted_dict = dict()
