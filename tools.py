@@ -77,5 +77,5 @@ def perform_instant_runoff(candidates, rounding_decimalplace = 6):
 
 
 if __name__=='__main__':
-      candidates = intake()
-      perform_instant_runoff(candidates)
+  candidates = intake()
+  perform_instant_runoff(candidates)
