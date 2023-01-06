@@ -1,19 +1,48 @@
 from collections import Counter
 from tools import *
+import numpy as np
 
-def polarized_count_candidate_votes(eliminated_candidate, candidates, lost_voters, most_liberal = False):
-    if not most_liberal:
-        index = eliminated_candidate - 1
-        candidates[index] += candidates[eliminated_candidate]
-    else:
-        lost_voters += candidates[eliminated_candidate]
+# def polarized_count_candidate_votes(eliminated_candidate, candidates, lost_voters, most_liberal = False):
+#     if not most_liberal:
+#         index = eliminated_candidate - 1
+#         candidates[index] += candidates[eliminated_candidate]
+#     else:
+#         lost_voters += candidates[eliminated_candidate]
 
-    candidates.pop(eliminated_candidate)
-    return candidates
+#     candidates.pop(eliminated_candidate)
+#     return candidates
 
-def polarized_perform_instant_runoff(candidates, rounding_decimalplace = 6):
-    lost_voters = 0 # voters who end up not voting in the election because their candidate has been eliminated, and all other candidates are more conservative
+def polarized_count_candidate_votes(eliminated_candidate_index, candidates, candidate_votes=None, lost_voters=0):
+    if not candidate_votes:
+          ...
+    elif eliminated_candidate_index <= 0:
+      candidates[eliminated_candidate_index - 1] += candidates[eliminated_candidate_index]
+    else: 
+      lost_voters += candidates[eliminated_candidate_index]
+
+    candidates.pop(eliminated_candidate_index)
+    return candidate_votes, lost_voters
+
+def polarized_perform_instant_runoff(candidates, rounding_decimalplace=6):
+    lost_voters = 0
+    eliminated_candidate_index = -1
+    election_round = 1
+    candidate_votes, lost_voters = polarized_count_candidate_votes(-1, candidates)
+
+    while len(candidates) > 1:
+      candidate_votes = [
+        round(votes, rounding_decimalplace) for votes in candidate_votes
+      ]
+      sorted = np.argsort(candidate_votes)
+      if len(sorted) > 1 and sorted[0] == sorted[1]:
+        print('there was a tie')
+        return 1
+      else: 
+        eliminated_candidate_index = sorted[0]
+      candidate_votes, lost_voters = polarized_count_candidate_votes(eliminated_candidate_index, candidates, candidate_votes, lost_voters)
+      election_round += 1 # increment by 1
     return
+
 
 # TODO: Auto win for >.5 vote
 def perform_instant_runoff(candidates, rounding_decimalplace = 6):
