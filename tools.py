@@ -63,7 +63,7 @@ def perform_instant_runoff(candidates, rounding_decimalplace = 6):
     # print(Counter(candidate_votes))
     if tied:
       print('There was a tie don\'t consider this')
-      return
+      return None # explicitly stated, for my sanity
 
     print('Eliminated:', candidates[eliminated_candidate])
 
