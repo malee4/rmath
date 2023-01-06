@@ -9,7 +9,11 @@ def sort_dict_keys(my_dict):
     return sorted_dict
 
 def sort_dict_values(my_dict):
-    return
+    my_keys = list(my_dict.keys())
+    my_values = list(my_dict.values())
+    my_values_indices = np.argsort(my_values)
+    sorted_dict = {my_keys[i]: my_values[i] for i in my_values_indices}
+    return sorted_dict
 
 def modified_intake():
     candidates = {}
@@ -28,3 +32,7 @@ def modified_intake():
     
     candidates = sort_dict_keys(candidates)
     return candidates
+
+if __name__ == '__main__':
+    my_dict = {}
+    print(sort_dict_values(my_dict))
