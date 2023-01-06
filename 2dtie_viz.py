@@ -10,6 +10,7 @@ b_values = []
 for i in range(iter):
     a = np.random.random()
     b = np.random.random()
+    c = np.random.random()
 
     candidates = [a, b]
     output = perform_instant_runoff(candidates, 2)
@@ -17,6 +18,11 @@ for i in range(iter):
         a_values.append(a)
         b_values.append(b)
 
+
+
 plt.scatter(a_values, b_values)
+plt.title('Locations of Tie for Two Candidates')
+plt.xlabel('A')
+plt.ylabel('B')
 plt.show()
 
