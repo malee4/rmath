@@ -18,8 +18,6 @@ for i in range(iter):
         a_values.append(a)
         b_values.append(b)
 
-
-
 plt.scatter(a_values, b_values)
 plt.title('Locations of Tie for Two Candidates')
 plt.xlabel('A')
