@@ -11,7 +11,7 @@ def loss_count_candidate_votes(eliminated_candidate_index, candidates, candidate
             votes = 0
 
             if i == 0: 
-                votes += i
+                votes += candidates[i]
             else:
                 votes += (candidates[i] - candidates[i-1]) / 2.0
 
@@ -27,17 +27,23 @@ def loss_count_candidate_votes(eliminated_candidate_index, candidates, candidate
         # under
         if eliminated_candidate_index == 0:
             candidate_votes[eliminated_candidate_index + 1] += (1.0 - loss) * candidates[eliminated_candidate_index]
+            lost_voters += loss * candidates[eliminated_candidate_index]
         else:
-            candidate_votes[eliminated_candidate_index - 1] += (1.0 - loss) * ((candidates[eliminated_candidate_index] - candidates[eliminated_candidate_index - 1]) / 2)
+            votes = ((candidates[eliminated_candidate_index] - candidates[eliminated_candidate_index - 1]) / 2)
+            candidate_votes[eliminated_candidate_index - 1] += (1.0 - loss) * votes
+            lost_voters += loss * votes
         # over
         if eliminated_candidate_index == len(candidates) - 1:
             candidate_votes[eliminated_candidate_index - 1] += (1.0 - loss) * (1 - candidates[eliminated_candidate_index])
+            lost_voters += loss * (1 - candidates[eliminated_candidate_index])
         else:
-            candidate_votes[eliminated_candidate_index + 1] += (1.0 - loss) * ((candidates[eliminated_candidate_index + 1] - candidates[eliminated_candidate_index]) / 2)
+            votes = ((candidates[eliminated_candidate_index + 1] - candidates[eliminated_candidate_index]) / 2)
+            candidate_votes[eliminated_candidate_index + 1] += (1.0 - loss) * votes
+            lost_voters += loss * votes
         
     candidates.pop(eliminated_candidate_index)
     candidate_votes.pop(eliminated_candidate_index)
-
+    print(candidate_votes)
     return candidate_votes, candidates, lost_voters
 
 def loss_perform_instant_runoff(candidates, loss = 0.01, rounding_decimalplace = 6):
@@ -48,7 +54,7 @@ def loss_perform_instant_runoff(candidates, loss = 0.01, rounding_decimalplace =
     eliminated_candidate_index = -1
 
     # perform the initial count
-    candidate_votes, candidates = loss_count_candidate_votes(eliminated_candidate_index, candidates, None, lost_voters, loss)
+    candidate_votes, candidates, lost_voters = loss_count_candidate_votes(eliminated_candidate_index, candidates, None, lost_voters, loss)
 
     while len(candidates) > 1:
         # round the values
@@ -66,12 +72,12 @@ def loss_perform_instant_runoff(candidates, loss = 0.01, rounding_decimalplace =
             return 1
 
         # calculate the votes
-        candidate_votes, candidates, lost_voters = loss_count_candidate_votes(eliminated_candidate_index, candidates, candidate_votes, lost_voters)
+        candidate_votes, candidates, lost_voters = loss_count_candidate_votes(eliminated_candidate_index, candidates, candidate_votes, lost_voters, loss)
 
         lost_voters = round(lost_voters, rounding_decimalplace)
         # print out the results
         print('Election round', election_round, ' results: ', candidates)
-        print('New list:', candidates)
+        print('Voter distribution: ', candidate_votes)
         print('Voters lost:', lost_voters)
 
         election_round += 1
@@ -82,5 +88,5 @@ def loss_perform_instant_runoff(candidates, loss = 0.01, rounding_decimalplace =
 
 if __name__ == '__main__':
     candidates = intake()
-    loss_perform_instant_runoff(candidates)
+    loss_perform_instant_runoff(candidates, loss=.5)
     
