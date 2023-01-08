@@ -47,13 +47,13 @@ def polarized_perform_instant_runoff(candidates, rounding_decimalplace=6):
         candidate_votes = [
             round(votes, rounding_decimalplace) for votes in candidate_votes
         ]
-        # check for ties
-        sorted = np.argsort(candidate_votes)
 
-        if len(sorted) > 1 and candidate_votes[sorted[0]] == candidate_votes[sorted[1]]:
-            return 1
-        else:
-            eliminated_candidate_index = sorted[0]
+        eliminated_candidate_index = min(range(len(candidate_votes)),
+                               key=candidate_votes.__getitem__)
+
+        tied = Counter(candidate_votes)[min(candidate_votes)] != 1
+        if tied:
+              return 1
             # print('Eliminated:', candidates[eliminated_candidate_index])
 
         candidate_votes, candidates, lost_voters = polarized_count_candidate_votes(
