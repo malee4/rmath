@@ -34,6 +34,8 @@ def polarized_count_candidate_votes(eliminated_candidate_index, candidates, cand
 
 
 def polarized_perform_instant_runoff(candidates, rounding_decimalplace=6):
+    if len(candidates) == 1:
+          return
     lost_voters = 0
     eliminated_candidate_index = -1
     election_round = 0
