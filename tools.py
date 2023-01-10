@@ -108,6 +108,32 @@ def modified_intake():
     
     candidates = sort_dict_keys(candidates)
     return candidates
+  
+def m_dimension_intake():
+  try:
+    dim = float(input("Input dimensions: "))
+  except ValueError:
+    print("Input valid dimensions.")
+    exit()
+
+  end_intake = False
+
+  candidates = []
+
+  while end_intake == "False":
+    line = input('candidate: ').split()
+
+    # break condition
+    if line[0] == 'end' or line[0] == 'done':
+      return candidates
+    elif len(line) != dim:
+      print("Incorrect dimensions. Try again.")
+      continue
+
+    candidate = [float(line[i]) for i in range(len(line))]
+    candidates.append(candidate)
+
+  return candidates
 
 
 if __name__=='__main__':

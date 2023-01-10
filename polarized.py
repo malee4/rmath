@@ -29,7 +29,6 @@ def polarized_count_candidate_votes(eliminated_candidate_index, candidates, cand
         lost_voters += candidate_votes[eliminated_candidate_index]
         candidates.pop(eliminated_candidate_index)
         candidate_votes.pop(eliminated_candidate_index)
-
     return candidate_votes, candidates, lost_voters
 
 
@@ -69,9 +68,9 @@ def polarized_perform_instant_runoff(candidates, rounding_decimalplace=6):
         election_round += 1  # increment by 1
     # print()
     # print('Winner:', candidates[0])
-    return
+    return 
 
 
 if __name__ == '__main__':
     candidates = intake()
-    polarized_perform_instant_runoff(candidates)
+    print(polarized_perform_instant_runoff(candidates))

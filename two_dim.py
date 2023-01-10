@@ -1,33 +1,6 @@
-from main import count_candidate_votes
+from tools import m_dimension_intake
 from scipy.integrate import quad
 import numpy as np
-
-
-def m_dimension_intake():
-  try:
-    dim = float(input("Input dimensions: "))
-  except ValueError:
-    print("Input valid dimensions.")
-    exit()
-
-  end_intake = False
-
-  candidates = []
-
-  while end_intake == "False":
-    line = input('candidate: ').split()
-
-    # break condition
-    if line[0] == 'end' or line[0] == 'done':
-      return candidates
-    elif len(line) != dim:
-      print("Incorrect dimensions. Try again.")
-      continue
-
-    candidate = [float(line[i]) for i in range(len(line))]
-    candidates.append(candidate)
-
-  return candidates
 
 
 def find_slope(x1, y1, x2, y2):
@@ -96,7 +69,7 @@ def two_candidate_area(candidates):
         area = xA + quad(f, xA, xC)
         candidate_votes.append(area)
         candidate_votes.append(1 - area)
-      elif y <= 1:
+      elif yB <= 1:
         area = xA + quad(f, xA, 1)
         candidate_votes.append(area)
         candidate_votes.append(1 - area)
@@ -104,7 +77,7 @@ def two_candidate_area(candidates):
         area = quad(f, 0, xA) + (1 - xA)
         candidate_votes.append(area)
         candidate_votes.append(1 - area)
-    elif x > 1:
+    elif xA > 1:
       if yB <= 1 and yB >= 0:
         area = quad(f, xC, 1)
         candidate_votes.append(area)
@@ -138,8 +111,12 @@ def two_perform_instant_runoff(candidates):
   candidate_votes = two_count_candidate_votes(elim_index, candidates)
 
   # because this is two people, we can determine who won
-  ...
-
+  if candidate_votes[0] > candidate_votes[1]:
+        print("Winner: ", candidate_votes[0])
+  elif candidate_votes[0] < candidate_votes[1]:
+        print("Winner: ", candidate_votes[1])
+  else:
+        print("Tie.")
   return
 
 

@@ -28,22 +28,21 @@ def loss_count_candidate_votes(eliminated_candidate_index, candidates, candidate
         if eliminated_candidate_index == 0:
             candidate_votes[eliminated_candidate_index + 1] += (1.0 - loss) * candidates[eliminated_candidate_index]
             lost_voters += loss * candidates[eliminated_candidate_index]
+        elif eliminated_candidate_index == len(candidates) - 1:
+            candidate_votes[eliminated_candidate_index - 1] += (1.0 - loss) * (1 - candidates[eliminated_candidate_index])
+            lost_voters += loss * (1 - candidates[eliminated_candidate_index])
         else:
             votes = ((candidates[eliminated_candidate_index] - candidates[eliminated_candidate_index - 1]) / 2)
             candidate_votes[eliminated_candidate_index - 1] += (1.0 - loss) * votes
             lost_voters += loss * votes
-        # over
-        if eliminated_candidate_index == len(candidates) - 1:
-            candidate_votes[eliminated_candidate_index - 1] += (1.0 - loss) * (1 - candidates[eliminated_candidate_index])
-            lost_voters += loss * (1 - candidates[eliminated_candidate_index])
-        else:
+            
             votes = ((candidates[eliminated_candidate_index + 1] - candidates[eliminated_candidate_index]) / 2)
             candidate_votes[eliminated_candidate_index + 1] += (1.0 - loss) * votes
             lost_voters += loss * votes
         
     candidates.pop(eliminated_candidate_index)
     candidate_votes.pop(eliminated_candidate_index)
-    print(candidate_votes)
+    # print(candidate_votes)
     return candidate_votes, candidates, lost_voters
 
 def loss_perform_instant_runoff(candidates, loss = 0.01, rounding_decimalplace = 6):
@@ -61,14 +60,16 @@ def loss_perform_instant_runoff(candidates, loss = 0.01, rounding_decimalplace =
         candidate_votes = [
             round(votes, rounding_decimalplace) for votes in candidate_votes
         ]
+        print('candidate votes ', candidate_votes)
 
         # find the eliminated candidate location
         eliminated_candidate_index = min(range(len(candidate_votes)),
                                key=candidate_votes.__getitem__)
+        print('elim index: ', eliminated_candidate_index)
 
         tied = Counter(candidate_votes)[min(candidate_votes)] != 1
         if tied:
-            print("There was a tie!")
+            #print("There was a tie!")
             return 1
 
         # calculate the votes
