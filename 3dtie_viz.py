@@ -2,11 +2,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tools import perform_instant_runoff
 from polarized import polarized_perform_instant_runoff
+from loss import loss_perform_instant_runoff
 
 is_polarized = False
+is_loss = True
 
 # for two-candidate 
-iter = 100_000
+iter = 1_000_00
 a_values = []
 b_values = []
 c_values = []
@@ -19,8 +21,11 @@ for i in range(iter):
     candidates = [a, b, c]
     if is_polarized:
         output = polarized_perform_instant_runoff(candidates, 2)
+    elif is_loss:
+        output = loss_perform_instant_runoff(candidates, 2)
     else:
         output = perform_instant_runoff(candidates, 2)
+
     if output:
         a_values.append(a)
         b_values.append(b)
