@@ -34,4 +34,3 @@ else:
 plt.xlabel('A')
 plt.ylabel('B')
 plt.show()
-
