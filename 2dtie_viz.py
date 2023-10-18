@@ -33,5 +33,3 @@ else:
     plt.title('Locations of Tie for Two Candidates')
 plt.xlabel('A')
 plt.ylabel('B')
-plt.show()
-

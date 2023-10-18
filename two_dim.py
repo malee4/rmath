@@ -1,125 +1,114 @@
-from tools import m_dimension_intake
 from scipy.integrate import quad
 import numpy as np
+from voronoi import find_all_areas  # (points)
+from collections import Counter
+import matplotlib.pyplot as plt
 
+# NOTE: THIS METHOD RETURNS UNSORTED CANDIDATES
+def m_dimension_intake():
+  try:
+    dim = float(input("Input dimensions: "))
+  except ValueError:
+    print("Input valid dimensions.")
+    exit()
 
-def find_slope(x1, y1, x2, y2):
-  if y1 == y2:
-    return
-  m = -(x2 - x1) / (y2 - y1)
-  return m
+  end_intake = False
 
+  candidates = []
 
-def find_constant(x1, y1, x2, y2):
-  if y1 == y2:
-    return
-  C = ((y2**2 - y1**2) + (x2**2 - x1**2) / (2 * (y2 - y1)))
-  return C
+  while end_intake == False:
+      line = input('candidate: ').split()
 
+      # break condition
+      if line[0] == 'end' or line[0] == 'done':
+        return candidates
+      elif len(line) != dim:
+        print("Incorrect dimensions. Try again.")
+        continue
 
-  # this method is for calculating area in two dimensions only
-def two_candidate_area(candidates):
-  # sort the candidates based on their x-values
-  if candidates[1][0] < candidates[0][0]:
-    temp = candidates[1][0]
-    candidates[1][0] = candidates[0][0]
-    candidates[0][0] = temp
+      candidate = [float(line[i]) for i in range(len(line))]
+      candidates.append(candidate)
 
-  if len(candidates) == 1:
-    return [1]
-  elif len(candidates) <= 0:
-    return []
-  elif len(candidates[0]) != 2:
-    print("Improper dimensions")
+  return candidates
 
-  candidate_votes = []
+def two_dim_perform_instant_runoff(points):
+  count = 1
+  while len(points) > 1:
+    # find areas of new set of points
+    areas = find_all_areas(points, graph = True, round = count)
+    print('Points: ', points)
+    print('Areas: ', areas)
+    
+    eliminated_candidate_index = min(range(len(areas)),
+                               key=areas.__getitem__)
 
-  m = find_slope(candidates[0][0], candidates[0][1], candidates[1][0],
-                 candidates[1][1])
-  C = find_constant(candidates[0][0], candidates[0][1], candidates[1][0],
-                    candidates[1][1])
+    tied = Counter(areas)[min(areas)] != 1
+    
+    if tied:
+      print('Tie.')
+      return tied
+    
+    points.pop(eliminated_candidate_index)
+    areas.pop(eliminated_candidate_index)
 
-  xA = (1 - C) / m
-  xC = -C / m
-  yB = m + C
+    print(eliminated_candidate_index, ' removed')
+    count += 1
 
-  # account for cases where they are equal
-  if not m or not C:  # in the case of a vertical dividing line
-    candidate_votes.append(xA)
-    candidate_votes.append(1 - xA)
-  else:
-    # re-sort the candidates based on their y-values
-    if candidates[1][1] < candidates[0][1]:
-      temp = candidates[1][1]
-      candidates[1][1] = candidates[0][1]
-      candidates[0][1] = temp
-
-    def f(x):
-      return m * x + C
-
-    if xA < 0:
-      if yB <= 1 and yB >= 0:
-        area, err = quad(f, 0, 1)
-        candidate_votes.append(area)
-        candidate_votes.append(1 - area)
-      else:
-        print("Error has been reached in the logic.")
-    elif xA <= 1:
-      if yB < 0:
-        area = xA + quad(f, xA, xC)
-        candidate_votes.append(area)
-        candidate_votes.append(1 - area)
-      elif yB <= 1:
-        area = xA + quad(f, xA, 1)
-        candidate_votes.append(area)
-        candidate_votes.append(1 - area)
-      else:
-        area = quad(f, 0, xA) + (1 - xA)
-        candidate_votes.append(area)
-        candidate_votes.append(1 - area)
-    elif xA > 1:
-      if yB <= 1 and yB >= 0:
-        area = quad(f, xC, 1)
-        candidate_votes.append(area)
-        candidate_votes.append(1 - area)
-      else:
-        print("Error has been reached in the logic, 2")
-
-  return candidate_votes
-
-
-def two_count_candidate_votes(elim_index, candidates, candidate_votes=None):
-
-  if len(candidates) == 2:
-    two_candidate_area()
-  else:
-    print('sorry')
-    return
-
-  return candidate_votes
-
-
-def two_perform_instant_runoff(candidates):
-  dim = 2
-  elim_index = -1
-  if len(candidates) <= 0:
-    print('No candidates entered.')
-    return
-  elif len(candidates) == 1:
-    print('Winner: ', candidates[0])
-
-  candidate_votes = two_count_candidate_votes(elim_index, candidates)
-
-  # because this is two people, we can determine who won
-  if candidate_votes[0] > candidate_votes[1]:
-        print("Winner: ", candidate_votes[0])
-  elif candidate_votes[0] < candidate_votes[1]:
-        print("Winner: ", candidate_votes[1])
-  else:
-        print("Tie.")
+  print('Winner: ', points[0])
   return
 
+def two_dim_pir_func(points):
+  count = 1
+  while len(points) > 1:
+    # find areas of new set of points
+    areas = find_all_areas(points, graph = False, round = count)
+    #print('Points: ', points)
+    #print('Areas: ', areas)
+    
+    eliminated_candidate_index = min(range(len(areas)),
+                               key=areas.__getitem__)
+
+    tied = Counter(areas)[min(areas)] != 1
+    
+    if tied:
+      #print('Tie.')
+      return 
+    
+    points.pop(eliminated_candidate_index)
+    areas.pop(eliminated_candidate_index)
+
+    #print(eliminated_candidate_index, ' removed')
+    count += 1
+
+  #print('Winner: ', points[0])
+  return points[0]
+
+# graph the possible placements for two issues, one existing candidate
+def twod_single_candidate():
+      iter = 1000
+      existing_candidate = [.4, .3]
+      x = []
+      y = []
+
+      for i in range(1, iter):
+            for j in range(1, iter):
+                  xp = i * (1 / iter)
+                  yp = j * (1 / iter)
+                  new_candidate = [xp, yp]
+                  points = [existing_candidate, new_candidate]
+                  winner = two_dim_pir_func(points) # if none, then tied
+                  if winner == new_candidate:
+                        x.append(xp)
+                        y.append(yp)
+
+      plt.scatter(x, y)
+      plt.xlabel('Issue 1')
+      plt.ylabel('Issue 2')
+      plt.title('Given existing candidate (0.4, 0.3), valid area for X to be placed to win')
+      plt.show()
+      return
 
 if __name__ == '__main__':
-  candidates = m_dimension_intake()
-  two_perform_instant_runoff(candidates)
+  #candidates = m_dimension_intake()
+  # two_dim_perform_instant_runoff(candidates)
+  twod_single_candidate()
